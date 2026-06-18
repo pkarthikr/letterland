@@ -1,0 +1,35 @@
+/* Letter Land — radii, shadows, borders, motion.
+   Soft, warm-tinted shadows. Generous-but-restrained rounding (playful, minimal). */
+
+:root {
+  /* Radii */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   28px;
+  --radius-2xl:  40px;
+  --radius-pill: 999px;
+  --radius-full: 50%;
+
+  /* Border widths */
+  --border-thin:   1px;
+  --border-medium: 1.5px;
+  --border-thick:  2px;
+
+  /* Shadows — warm brown tint, low spread, soft */
+  --shadow-xs:  0 1px 2px rgba(74, 66, 59, 0.06);
+  --shadow-sm:  0 2px 6px rgba(74, 66, 59, 0.07);
+  --shadow-md:  0 6px 18px rgba(74, 66, 59, 0.09);
+  --shadow-lg:  0 14px 36px rgba(74, 66, 59, 0.12);
+  --shadow-xl:  0 28px 60px rgba(74, 66, 59, 0.16);
+  --shadow-focus: 0 0 0 3px rgba(212, 148, 111, 0.45);
+
+  /* Motion — gentle, no bounce by default */
+  --ease-out:   cubic-bezier(0.22, 0.61, 0.36, 1);   /* @kind other */
+  --ease-in-out:cubic-bezier(0.45, 0.05, 0.55, 0.95);/* @kind other */
+  --ease-soft:  cubic-bezier(0.34, 1.2, 0.64, 1); /* @kind other */ /* slight playful overshoot */
+  --duration-fast:   120ms;  /* @kind other */
+  --duration-normal: 220ms;  /* @kind other */
+  --duration-slow:   360ms;  /* @kind other */
+}

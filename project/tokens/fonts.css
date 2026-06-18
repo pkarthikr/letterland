@@ -1,0 +1,14 @@
+/* Letter Land — font family tokens.
+   The actual @font-face declarations come from Google Fonts (imported in styles.css):
+   Nunito (display / headings), Mulish (body / UI), Caveat (accent handwriting). */
+
+:root {
+  /* Display & headings: rounded, warm, credible */
+  --font-display: 'Nunito', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  /* Body & UI: neutral, highly legible humanist sans */
+  --font-body: 'Mulish', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Accent: handwritten warmth — use sparingly (taglines, signatures) */
+  --font-accent: 'Caveat', 'Segoe Script', cursive;
+  /* Mono: incidental code / data */
+  --font-mono: ui-monospace, monospace;
+}

@@ -1,0 +1,5 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="48" height="48" rx="12" fill="#C77F5E"></rect>
+  <rect x="6" y="6" width="36" height="36" rx="9" fill="none" stroke="#FBF1EB" stroke-opacity="0.55" stroke-width="1.6"></rect>
+  <text x="24" y="26" text-anchor="middle" dominant-baseline="central" font-family="Nunito, sans-serif" font-weight="800" font-size="28" fill="#FBF1EB">a</text>
+</svg>

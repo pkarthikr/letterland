@@ -1,0 +1,117 @@
+/* Letter Land — color system.
+   Warm, pastel, trustworthy. Clay (primary), Sage (secondary), warm Ink neutrals on Cream.
+   Base scales first, then semantic aliases. */
+
+:root {
+  /* ---- Clay (primary / warm terracotta) ---- */
+  --clay-50:  #FBF1EB;
+  --clay-100: #F6E1D5;
+  --clay-200: #EFCBB6;
+  --clay-300: #E3B7A0; /* chosen pastel */
+  --clay-400: #D4946F;
+  --clay-500: #C77F5E; /* primary accent */
+  --clay-600: #B26645;
+  --clay-700: #8F4F36;
+  --clay-800: #6E3D2B;
+  --clay-900: #4F2C20;
+
+  /* ---- Sage (secondary / calm green-grey) ---- */
+  --sage-50:  #F4F6F0;
+  --sage-100: #E8ECE0;
+  --sage-200: #D9DDCF; /* chosen pastel */
+  --sage-300: #C2C9B3;
+  --sage-400: #A4AE90;
+  --sage-500: #8B9A7D;
+  --sage-600: #6F7D63;
+  --sage-700: #58634F;
+  --sage-800: #434C3C;
+  --sage-900: #2F3529;
+
+  /* ---- Ink (warm neutral / browns & creams) ---- */
+  --ink-900: #2E2924;
+  --ink-800: #3D362F;
+  --ink-700: #4A423B; /* chosen body color */
+  --ink-600: #6B6258;
+  --ink-500: #8A8077;
+  --ink-400: #A89E94;
+  --ink-300: #C8BFB5;
+  --ink-200: #E3DCD3;
+  --ink-100: #F0EAE2;
+  --ink-50:  #FAF6F1; /* cream page */
+  --white:   #FFFFFF;
+
+  /* ---- Status (muted, harmonized) ---- */
+  --green-100: #E1EBDD;
+  --green-500: #5B8C6E;
+  --green-700: #3F6A52;
+
+  --amber-100: #F6E8CF;
+  --amber-500: #D99A4E;
+  --amber-700: #A66E2A;
+
+  --red-100: #F4DAD2;
+  --red-500: #C0573F;
+  --red-700: #933D2A;
+
+  --blue-100: #DCE6EE;
+  --blue-500: #6E8CA8;
+  --blue-700: #4C6884;
+
+  /* ---- Semantic aliases ---- */
+  /* Text */
+  --text-strong:    var(--ink-900);
+  --text-body:      var(--ink-700);
+  --text-muted:     var(--ink-600);
+  --text-subtle:    var(--ink-500);
+  --text-on-accent: var(--white);
+  --text-on-dark:   var(--ink-50);
+  --text-link:      var(--clay-600);
+  --text-link-hover:var(--clay-700);
+
+  /* Surfaces */
+  --surface-page:    var(--ink-50);
+  --surface-card:    var(--white);
+  --surface-sunken:  var(--ink-100);
+  --surface-raised:  var(--white);
+  --surface-inverse: var(--ink-900);
+
+  /* Brand surfaces (soft tints) */
+  --surface-clay-soft: var(--clay-100);
+  --surface-sage-soft: var(--sage-100);
+
+  /* Borders */
+  --border-subtle:  var(--ink-200);
+  --border-default: var(--ink-300);
+  --border-strong:  var(--ink-400);
+
+  /* Accent (interactive primary) */
+  --accent:           var(--clay-500);
+  --accent-hover:     var(--clay-600);
+  --accent-active:    var(--clay-700);
+  --accent-soft:      var(--clay-100);
+  --accent-soft-hover:var(--clay-200);
+  --accent-on-soft:   var(--clay-700);
+
+  /* Secondary (sage) */
+  --secondary:        var(--sage-500);
+  --secondary-hover:  var(--sage-600);
+  --secondary-soft:   var(--sage-100);
+  --secondary-on-soft:var(--sage-700);
+
+  /* Focus ring */
+  --focus-ring: var(--clay-400);
+
+  /* Status semantics */
+  --success:      var(--green-500);
+  --success-soft: var(--green-100);
+  --success-text: var(--green-700);
+  --warning:      var(--amber-500);
+  --warning-soft: var(--amber-100);
+  --warning-text: var(--amber-700);
+  --danger:       var(--red-500);
+  --danger-soft:  var(--red-100);
+  --danger-text:  var(--red-700);
+  --info:         var(--blue-500);
+  --info-soft:    var(--blue-100);
+  --info-text:    var(--blue-700);
+}

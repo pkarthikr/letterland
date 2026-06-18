@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letter Land — Phonics Program Overview</title>
+<link rel="icon" href="./project/assets/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Mulish:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── Variables ─── */
+  :root {
+    --clay-100: #F6E1D5;
+    --clay-300: #E3B7A0;
+    --clay-500: #C77F5E;
+    --clay-600: #B26645;
+    --clay-700: #8F4F36;
+    --sage-100: #E8ECE0;
+    --sage-500: #8B9A7D;
+    --sage-600: #6F7D63;
+    --sage-700: #58634F;
+    --ink-50:  #FAF6F1;
+    --ink-100: #F0EAE2;
+    --ink-200: #E3DCD3;
+    --ink-300: #C8BFB5;
+    --ink-600: #6B6258;
+    --ink-700: #4A423B;
+    --ink-800: #3D362F;
+    --ink-900: #2E2924;
+    --green-100: #E1EBDD;
+    --green-700: #3F6A52;
+    --white: #FFFFFF;
+
+    --font-display: 'Nunito', ui-rounded, system-ui, sans-serif;
+    --font-body: 'Mulish', system-ui, sans-serif;
+    --font-accent: 'Caveat', cursive;
+
+    --page-w: 210mm;
+    --margin: 16mm;
+  }
+
+  /* ─── Base ─── */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #e8e8e8;
+    font-family: var(--font-body);
+    font-size: 10pt;
+    color: var(--ink-700);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Page shell ─── */
+  .page {
+    width: var(--page-w);
+    min-height: 297mm;
+    margin: 16px auto;
+    background: var(--ink-50);
+    padding: var(--margin);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  /* ─── Print rules ─── */
+  @media print {
+    html, body { background: white; }
+    .page {
+      width: 100%;
+      margin: 0;
+      padding: var(--margin);
+      box-shadow: none;
+    }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    .page-break { page-break-before: always; break-before: page; }
+  }
+
+  /* ─── Typography ─── */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--ink-900);
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  p { margin: 0 0 0.6em; line-height: 1.55; }
+
+  /* ─── Cover ─── */
+  .cover {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--clay-300);
+  }
+  .cover-left h1 {
+    font-size: 26pt;
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .cover-left .accent { color: var(--clay-500); }
+  .cover-left .subtitle {
+    font-size: 10pt;
+    color: var(--ink-600);
+    line-height: 1.5;
+    max-width: 42ch;
+  }
+  .cover-left .by {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 10pt;
+    color: var(--ink-700);
+  }
+  .cover-left .by span { color: var(--clay-600); }
+
+  .cover-right {
+    background: var(--clay-100);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .cover-right img { height: 28px; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto; }
+
+  /* Stats strip on cover */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--ink-200);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .stat-cell {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid var(--ink-200);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .val {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 18pt;
+    color: var(--ink-900);
+    line-height: 1;
+  }
+  .stat-cell .lbl {
+    font-size: 7.5pt;
+    color: var(--ink-600);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ─── Section header ─── */
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 7pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .label-clay { background: var(--clay-100); color: var(--clay-700); }
+  .label-sage { background: var(--sage-100); color: var(--sage-700); }
+
+  /* ─── Unit card ─── */
+  .unit-card {
+    background: var(--white);
+    border: 1px solid var(--ink-200);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .unit-header {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+  .unit-num {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 14pt;
+    flex-shrink: 0;
+  }
+  .unit-num.clay { background: var(--clay-100); color: var(--clay-600); }
+  .unit-num.sage { background: var(--sage-100); color: var(--sage-600); }
+  .unit-title-block .range {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-600);
+    margin-bottom: 2px;
+  }
+  .unit-title-block h3 { font-size: 11.5pt; font-weight: 800; }
+
+  .unit-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Sessions list */
+  .sessions-block { }
+  .sessions-label {
+    font-size: 7pt; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink-600); margin-bottom: 5px;
+  }
+  .session-row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 6px;
+    font-size: 8.5pt;
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .session-range {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--clay-600);
+    font-size: 8pt;
+  }
+  .session-range.sage { color: var(--sage-600); }
+  .session-topic { color: var(--ink-700); }
+
+  /* Outcomes block */
+  .outcomes-block {
+    background: var(--green-100);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .outcomes-label {
+    font-size: 7pt; font-weight: 800; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--green-700); margin-bottom: 6px;
+  }
+  .outcome-row {
+    display: flex;
+    gap: 6px;
+    font-size: 8.5pt;
+    color: var(--green-700);
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .outcome-row:last-child { margin-bottom: 0; }
+  .check { flex-shrink: 0; font-weight: 900; color: var(--sage-600); margin-top: 0.5px; }
+
+  /* ─── Results grid ─── */
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .outcome-card {
+    background: var(--white);
+    border: 1px solid var(--ink-200);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .outcome-card .icon-box {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    background: var(--clay-100);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 7px;
+    font-size: 14px;
+  }
+  .outcome-card h4 {
+    font-size: 9pt; font-weight: 800; margin-bottom: 3px;
+  }
+  .outcome-card p {
+    font-size: 8pt; color: var(--ink-600); margin: 0; line-height: 1.45;
+  }
+
+  /* ─── About ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .about-photo {
+    background: linear-gradient(135deg, var(--sage-100), var(--clay-100));
+    border-radius: 10px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 8pt;
+    color: var(--sage-600);
+    font-weight: 600;
+    text-align: center;
+  }
+  .about-photo .avatar-icon { font-size: 32pt; line-height: 1; }
+  .about-name { font-family: var(--font-display); font-weight: 900; font-size: 13pt; margin-bottom: 3px; }
+  .about-role { font-size: 8.5pt; color: var(--clay-600); font-weight: 700; margin-bottom: 8px; }
+  .about-bio { font-size: 9pt; color: var(--ink-600); line-height: 1.55; margin-bottom: 10px; }
+  .credential-row {
+    display: flex;
+    gap: 6px;
+    font-size: 8.5pt;
+    color: var(--ink-700);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .cred-dot { color: var(--clay-500); font-weight: 900; flex-shrink: 0; }
+
+  /* ─── Outro banner ─── */
+  .outro {
+    background: var(--ink-900);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+    margin-top: 12px;
+  }
+  .outro h2 {
+    color: var(--ink-50);
+    font-size: 16pt;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .outro .accent { color: var(--clay-300); }
+  .outro p { color: var(--ink-300); font-size: 9pt; margin: 0 auto; max-width: 60ch; line-height: 1.55; }
+  .outro .cursive {
+    font-family: var(--font-accent);
+    font-size: 14pt;
+    color: var(--clay-300);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* ─── Footer bar ─── */
+  .footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--ink-200);
+    font-size: 8pt;
+    color: var(--ink-600);
+  }
+  .footer-bar img { height: 20px; }
+
+  /* ─── Print button ─── */
+  .print-btn {
+    display: block;
+    width: 200px;
+    margin: 0 auto 16px;
+    padding: 12px;
+    background: var(--clay-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .print-btn:hover { background: var(--clay-600); }
+  @media print { .print-btn { display: none !important; } }
+
+  /* ─── Utility ─── */
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 4px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-12 { margin-bottom: 12px; }
+  .mb-16 { margin-bottom: 16px; }
+  .section-gap { margin-top: 22px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">⬇ Save as PDF (Cmd+P)</button>
+
+<div class="page">
+
+  <!-- ─── Cover / Header ─── -->
+  <div class="cover no-break">
+    <div class="cover-left">
+      <img src="./project/assets/logo-full.svg" alt="Letter Land" style="height:30px;margin-bottom:12px;">
+      <h1>Helping little ones <span class="accent">fall in love</span> with letters.</h1>
+      <p class="subtitle mt-8">A comprehensive, structured phonics program — from listening for sounds all the way to reading Level 1 books independently. Joyful, research-backed, and designed for ages 4–6.</p>
+      <p class="by mt-8">By <span>Arpita Bhattacharjee</span> · Early literacy educator</p>
+    </div>
+    <div class="cover-right">
+      <img src="./project/assets/illustration-tiles.svg" alt="" style="width:100%;max-width:160px;height:auto;">
+    </div>
+  </div>
+
+  <!-- ─── Program Stats ─── -->
+  <div class="stats-row no-break">
+    <div class="stat-cell"><div class="val">90</div><div class="lbl">Sessions</div></div>
+    <div class="stat-cell"><div class="val">45 min</div><div class="lbl">Per session</div></div>
+    <div class="stat-cell"><div class="val">8</div><div class="lbl">Units</div></div>
+    <div class="stat-cell"><div class="val">4–6</div><div class="lbl">Age range</div></div>
+  </div>
+
+  <!-- ─── Section heading: The Program ─── -->
+  <div class="section-gap">
+    <span class="section-label label-sage">The program</span>
+    <h2 style="font-size:14pt;margin-top:4px;margin-bottom:4px;">Eight units. A complete foundation in reading.</h2>
+    <p style="font-size:9pt;color:var(--ink-600);">Each unit builds on the last — from hearing sounds to reading fluently, spelling confidently, and writing independently.</p>
+  </div>
+
+  <!-- ─── Unit 1 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num sage">01</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 01 · Sessions 1–10</div>
+        <h3>Listening, Sounds &amp; Phonological Awareness</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range sage">Sessions 1–3</span><span class="session-topic">Listening &amp; Rhyming</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 4–7</span><span class="session-topic">Syllables &amp; Sound Counting</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 8–10</span><span class="session-topic">Beginning, Middle &amp; End Sounds</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Identify first, last, and middle sounds in a word</div>
+        <div class="outcome-row"><span class="check">✓</span>Tell you whether two words start with the same sound</div>
+        <div class="outcome-row"><span class="check">✓</span>Produce at least 2 rhymes for a given word</div>
+        <div class="outcome-row"><span class="check">✓</span>Clap out sounds in a word</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 2 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num clay">02</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 02 · Sessions 11–20</div>
+        <h3>Letter Recognition &amp; Letter Sounds</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range">Sessions 11–13</span><span class="session-topic">Vowels — a, e, i, o, u (Short vs Long)</span></div>
+        <div class="session-row"><span class="session-range">Sessions 14–17</span><span class="session-topic">Consonants b–m</span></div>
+        <div class="session-row"><span class="session-range">Sessions 18–20</span><span class="session-topic">Consonants n–z</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Name and form all 26 letters with their sounds</div>
+        <div class="outcome-row"><span class="check">✓</span>Match pictures to their beginning sound</div>
+        <div class="outcome-row"><span class="check">✓</span>Differentiate between short and long vowel sounds</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 3 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num sage">03</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 03 · Sessions 21–32</div>
+        <h3>CVC Words, Blending &amp; Word Families</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range sage">Sessions 21–24</span><span class="session-topic">Blending CVC Words</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 25–27</span><span class="session-topic">Short -a and short -i word families</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 28–30</span><span class="session-topic">Short -o, -u, -e</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 31–32</span><span class="session-topic">High Frequency Words &amp; Sentence Reading</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Read and spell 50+ CVC words independently</div>
+        <div class="outcome-row"><span class="check">✓</span>Use word families to read unfamiliar words</div>
+        <div class="outcome-row"><span class="check">✓</span>Read 20 highly used sight words</div>
+        <div class="outcome-row"><span class="check">✓</span>Read simple 3–4 word sentences</div>
+        <div class="outcome-row"><span class="check">✓</span>Spell CVC words correctly from dictation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 4 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num clay">04</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 04 · Sessions 33–43</div>
+        <h3>Digraphs &amp; Consonant Blends</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range">Sessions 33–36</span><span class="session-topic">Digraphs — sh, ch, th</span></div>
+        <div class="session-row"><span class="session-range">Sessions 37–40</span><span class="session-topic">R, L, S Blends</span></div>
+        <div class="session-row"><span class="session-range">Session 41</span><span class="session-topic">End Blends</span></div>
+        <div class="session-row"><span class="session-range">Sessions 42–43</span><span class="session-topic">3-letter Blends</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Read and spell words with initial and final blends</div>
+        <div class="outcome-row"><span class="check">✓</span>Blend high-frequency words with digraphs</div>
+        <div class="outcome-row"><span class="check">✓</span>Build better vocabulary through pattern recognition</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Page 2 ─── -->
+  <div class="page-break"></div>
+
+  <!-- ─── Unit 5 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num sage">05</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 05 · Sessions 44–50</div>
+        <h3>Magic E &amp; Long Vowel Sounds</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range sage">Sessions 44–45</span><span class="session-topic">Magic E &amp; Long Vowel Introduction</span></div>
+        <div class="session-row"><span class="session-range sage">Session 46</span><span class="session-topic">Long A sounds</span></div>
+        <div class="session-row"><span class="session-range sage">Session 47</span><span class="session-topic">Long E sounds</span></div>
+        <div class="session-row"><span class="session-range sage">Session 48</span><span class="session-topic">Long I sounds</span></div>
+        <div class="session-row"><span class="session-range sage">Session 49</span><span class="session-topic">Long O sounds</span></div>
+        <div class="session-row"><span class="session-range sage">Session 50</span><span class="session-topic">Long U sounds</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Understand how magic e changes a vowel sound</div>
+        <div class="outcome-row"><span class="check">✓</span>Read and use all long vowel patterns</div>
+        <div class="outcome-row"><span class="check">✓</span>Use high-frequency words with long vowel sounds</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 6 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num clay">06</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 06 · Sessions 51–57</div>
+        <h3>R-Controlled Vowels &amp; Diphthongs</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range">Sessions 51–52</span><span class="session-topic">R-controlled Vowels — ar, er, ir, or, ur</span></div>
+        <div class="session-row"><span class="session-range">Sessions 53–54</span><span class="session-topic">Tricky Long Vowel Teams — igh, ei, oe</span></div>
+        <div class="session-row"><span class="session-range">Sessions 56–57</span><span class="session-topic">Diphthongs — au, aw, oi/oy, ou/ow</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Read all major vowel teams accurately</div>
+        <div class="outcome-row"><span class="check">✓</span>Use igh, oi/oy, ou/ow correctly in spelling</div>
+        <div class="outcome-row"><span class="check">✓</span>Show fluency when reading paragraphs</div>
+        <div class="outcome-row"><span class="check">✓</span>Build vocabulary using unit patterns</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 7 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num sage">07</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 07 · Sessions 58–69</div>
+        <h3>Spelling Rules</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range sage">Sessions 58–59</span><span class="session-topic">Silent Letters — kn, wr, gn, mb</span></div>
+        <div class="session-row"><span class="session-range sage">Session 60</span><span class="session-topic">Soft vs Hard C</span></div>
+        <div class="session-row"><span class="session-range sage">Session 61</span><span class="session-topic">Soft vs Hard G</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 62–63</span><span class="session-topic">Floss Rule — ff, ll, ss, zz</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 64–65</span><span class="session-topic">Doubling Rule (e.g. running)</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 66–67</span><span class="session-topic">Drop-E Rule (e.g. making)</span></div>
+        <div class="session-row"><span class="session-range sage">Sessions 68–69</span><span class="session-topic">Y-to-I Rule (e.g. happier)</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Apply the doubling rule confidently</div>
+        <div class="outcome-row"><span class="check">✓</span>Apply the drop-e rule when adding suffixes</div>
+        <div class="outcome-row"><span class="check">✓</span>Distinguish soft and hard C &amp; G sounds</div>
+        <div class="outcome-row"><span class="check">✓</span>Spell silent letter words correctly</div>
+        <div class="outcome-row"><span class="check">✓</span>Know and use more sight words</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Unit 8 ─── -->
+  <div class="unit-card no-break">
+    <div class="unit-header">
+      <div class="unit-num clay">08</div>
+      <div class="unit-title-block">
+        <div class="range">Unit 08 · Sessions 70–80</div>
+        <h3>Fluency, Comprehension &amp; Punctuation</h3>
+      </div>
+    </div>
+    <div class="unit-body">
+      <div class="sessions-block">
+        <div class="sessions-label">Sessions</div>
+        <div class="session-row"><span class="session-range">Sessions 70–72</span><span class="session-topic">Reading Decodable Books</span></div>
+        <div class="session-row"><span class="session-range">Sessions 73–76</span><span class="session-topic">Reading Comprehension</span></div>
+        <div class="session-row"><span class="session-range">Session 77</span><span class="session-topic">Capital Letters, Full Stop &amp; Question Mark</span></div>
+        <div class="session-row"><span class="session-range">Sessions 78–80</span><span class="session-topic">Writing with Dictation</span></div>
+      </div>
+      <div class="outcomes-block">
+        <div class="outcomes-label">After this unit, your child can:</div>
+        <div class="outcome-row"><span class="check">✓</span>Read a Level 1 book from start to finish</div>
+        <div class="outcome-row"><span class="check">✓</span>Understand and explain what they've read</div>
+        <div class="outcome-row"><span class="check">✓</span>Use full stops, capitals &amp; question marks correctly</div>
+        <div class="outcome-row"><span class="check">✓</span>Explain word meanings using context clues</div>
+        <div class="outcome-row"><span class="check">✓</span>Write a sentence to dictation independently</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Overall Outcomes ─── -->
+  <div class="section-gap mt-16">
+    <span class="section-label label-clay">Program outcomes</span>
+    <h2 style="font-size:14pt;margin-top:4px;margin-bottom:4px;">What your child will be able to do.</h2>
+    <p style="font-size:9pt;color:var(--ink-600);">By the end of all 90 sessions, most children are reading Level 1 books — and asking for more.</p>
+  </div>
+
+  <div class="outcomes-grid no-break">
+    <div class="outcome-card">
+      <div class="icon-box">📚</div>
+      <h4>Reads Level 1 books</h4>
+      <p>Reads a complete decodable book from cover to cover independently.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">✏️</div>
+      <h4>Writes from dictation</h4>
+      <p>Spells CVC words and writes full sentences without prompting.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">🔤</div>
+      <h4>All 26 letter sounds</h4>
+      <p>Names, forms, and produces every letter sound with confidence.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">📖</div>
+      <h4>50+ CVC words</h4>
+      <p>Reads and spells 50+ consonant-vowel-consonant words with ease.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">🔍</div>
+      <h4>Applies spelling rules</h4>
+      <p>Uses doubling, drop-e, and y-to-i rules correctly when writing.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">💬</div>
+      <h4>Reads with punctuation</h4>
+      <p>Uses full stops, capitals, and question marks correctly in writing.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">🧩</div>
+      <h4>Reads sight words</h4>
+      <p>Recognises and reads 20+ high-frequency words fluently.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">🧠</div>
+      <h4>Reads with understanding</h4>
+      <p>Explains what they've read, using pictures and context clues.</p>
+    </div>
+    <div class="outcome-card">
+      <div class="icon-box">❤️</div>
+      <h4>Loves reading</h4>
+      <p>The shift from reluctant to enthusiastic — what every parent notices first.</p>
+    </div>
+  </div>
+
+  <!-- ─── About ─── -->
+  <div class="section-gap mt-16 no-break">
+    <span class="section-label label-sage">Your guide</span>
+    <h2 style="font-size:14pt;margin-top:4px;margin-bottom:10px;">About Arpita Bhattacharjee</h2>
+    <div class="about-grid">
+      <div class="about-photo">
+        <div class="avatar-icon">👩‍🏫</div>
+        <div style="font-size:8pt;color:var(--sage-700);font-weight:600;">Your photo</div>
+      </div>
+      <div>
+        <div class="about-bio">
+          I've spent years working with young children at the very beginning of their reading journey — watching the moment a child realises they can decode a word is something that never gets old. It's pure magic.<br><br>
+          This program was built to be both rigorous and joyful. Every session is structured, every activity is intentional — and every child moves at a pace that feels right for them. My goal is simple: for your child to finish this program calling themselves a reader.
+        </div>
+        <div class="credential-row"><span class="cred-dot">◆</span>Specialist in early childhood literacy and phonics instruction</div>
+        <div class="credential-row"><span class="cred-dot">◆</span>Trained in structured literacy approaches for ages 3–7</div>
+        <div class="credential-row"><span class="cred-dot">◆</span>Mum of two — this program is personal, not just professional</div>
+        <div class="credential-row"><span class="cred-dot">◆</span>Research-backed, child-led, play-first methodology</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Outro ─── -->
+  <div class="outro mt-12 no-break">
+    <span class="cursive">every child deserves this moment</span>
+    <h2>Making kids <span class="accent">fall in love</span> with letters.</h2>
+    <p>When a child realises they can read — really read — something changes. Their eyes light up. They feel capable, proud, and curious. That moment is what this program is for, and every one of the 90 sessions is designed to get them there.</p>
+  </div>
+
+  <!-- ─── Footer ─── -->
+  <div class="footer-bar">
+    <img src="./project/assets/logo-full.svg" alt="Letter Land">
+    <span>Arpita Bhattacharjee · Early literacy educator</span>
+    <span>© 2026 Letter Land</span>
+  </div>
+
+</div>
+
+</body>
+</html>

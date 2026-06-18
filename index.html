@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letter Land &mdash; Phonics Program</title>
+<meta name="description" content="A comprehensive 90-session phonics program for ages 4&ndash;6. Eight units from listening skills to fluent reading &mdash; joyful, structured, and effective.">
+<link rel="icon" href="./project/assets/favicon.svg">
+<link rel="stylesheet" href="./project/styles.css">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--surface-page); }
+
+  .ll-container {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ll-desktop-nav { display: flex; }
+  .ll-mobile-toggle { display: none !important; }
+
+  .ll-hero-grid    { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  .ll-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ll-stats-grid   { display: flex; gap: 0; }
+
+  .ll-nav-link:hover { color: var(--text-strong) !important; background: var(--surface-sunken); }
+
+  .ll-stat-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    border-right: 1px solid var(--border-subtle);
+  }
+  .ll-stat-item:last-child { border-right: none; }
+
+  .ll-unit-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 20px 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .ll-unit-header:hover { background: var(--surface-sunken); }
+
+  .ll-outcome-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 860px) {
+    .ll-desktop-nav   { display: none !important; }
+    .ll-mobile-toggle { display: flex !important; }
+    .ll-hero-grid     { grid-template-columns: 1fr !important; gap: 36px; }
+    .ll-hero-img      { order: -1; }
+    .ll-results-grid  { grid-template-columns: repeat(2, 1fr) !important; }
+    .ll-stats-grid    { flex-wrap: wrap; }
+    .ll-stat-item     { flex: 1 1 40%; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+  }
+  @media (max-width: 540px) {
+    .ll-results-grid { grid-template-columns: 1fr !important; }
+    .ll-stat-item    { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="./project/_ds_bundle.js"></script>
+
+<script type="text/babel">
+const { Button, Badge } = window.LetterLandDesignSystem_3d51bd;
+
+/* ------------------------------------------------------------------ */
+/* Data                                                                  */
+/* ------------------------------------------------------------------ */
+
+const UNITS = [
+  {
+    id: 'u1', num: '01', tone: 'sage', icon: 'ear',
+    title: 'Listening, Sounds & Phonological Awareness',
+    sessionRange: 'Sessions 1–10',
+    sessions: [
+      { range: 'Sessions 1–3',  topic: 'Listening & Rhyming' },
+      { range: 'Sessions 4–7',  topic: 'Syllables & Sound Counting' },
+      { range: 'Sessions 8–10', topic: 'Beginning, Middle & End Sounds' },
+    ],
+    outcomes: [
+      'Identify first, last, and middle sounds in a word',
+      'Tell you whether two words start with the same sound',
+      'Produce at least 2 rhymes for a given word',
+      'Clap out sounds in a word',
+    ],
+  },
+  {
+    id: 'u2', num: '02', tone: 'clay', icon: 'type',
+    title: 'Letter Recognition & Letter Sounds',
+    sessionRange: 'Sessions 11–20',
+    sessions: [
+      { range: 'Sessions 11–13', topic: 'Vowels — a, e, i, o, u (Short vs Long)' },
+      { range: 'Sessions 14–17', topic: 'Consonants b–m' },
+      { range: 'Sessions 18–20', topic: 'Consonants n–z' },
+    ],
+    outcomes: [
+      'Name and form all 26 letters with their sounds',
+      'Match pictures to their beginning sound',
+      'Differentiate between short and long vowel sounds',
+    ],
+  },
+  {
+    id: 'u3', num: '03', tone: 'sage', icon: 'layers',
+    title: 'CVC Words, Blending & Word Families',
+    sessionRange: 'Sessions 21–32',
+    sessions: [
+      { range: 'Sessions 21–24', topic: 'Blending CVC Words' },
+      { range: 'Sessions 25–27', topic: 'Short -a and short -i word families' },
+      { range: 'Sessions 28–30', topic: 'Short -o, -u, -e' },
+      { range: 'Sessions 31–32', topic: 'High-Frequency Words & Sentence Reading' },
+    ],
+    outcomes: [
+      'Read and spell 50+ CVC words independently',
+      'Use word families to read unfamiliar words',
+      'Begin reading high-frequency sight words',
+      'Read simple 3–4 word sentences',
+      'Spell CVC words correctly from dictation',
+    ],
+  },
+  {
+    id: 'u4', num: '04', tone: 'clay', icon: 'combine',
+    title: 'Digraphs & Consonant Blends',
+    sessionRange: 'Sessions 33–43',
+    sessions: [
+      { range: 'Sessions 33–36', topic: 'Digraphs — sh, ch, th' },
+      { range: 'Sessions 37–40', topic: 'R, L, S Blends' },
+      { range: 'Session 41',         topic: 'End Blends' },
+      { range: 'Sessions 42–43', topic: '3-letter Blends' },
+    ],
+    outcomes: [
+      'Read and spell words with initial and final blends',
+      'Blend high-frequency words with digraphs',
+      'Build better vocabulary through pattern recognition',
+    ],
+  },
+  {
+    id: 'u5', num: '05', tone: 'sage', icon: 'wand-2',
+    title: 'Magic E & Long Vowel Sounds',
+    sessionRange: 'Sessions 44–50',
+    sessions: [
+      { range: 'Sessions 44–45', topic: 'Magic E & Long Vowel Introduction' },
+      { range: 'Session 46',          topic: 'Long A sounds' },
+      { range: 'Session 47',          topic: 'Long E sounds' },
+      { range: 'Session 48',          topic: 'Long I sounds' },
+      { range: 'Session 49',          topic: 'Long O sounds' },
+      { range: 'Session 50',          topic: 'Long U sounds' },
+    ],
+    outcomes: [
+      'Understand how magic e changes a vowel sound',
+      'Read and use all long vowel patterns',
+      'Use high-frequency words with long vowel sounds',
+    ],
+  },
+  {
+    id: 'u6', num: '06', tone: 'clay', icon: 'git-merge',
+    title: 'R-Controlled Vowels & Diphthongs',
+    sessionRange: 'Sessions 51–57',
+    sessions: [
+      { range: 'Sessions 51–52', topic: 'R-controlled Vowels — ar, er, ir, or, ur' },
+      { range: 'Sessions 53–54', topic: 'Tricky Long Vowel Teams — igh, ei, oe' },
+      { range: 'Sessions 56–57', topic: 'Diphthongs — au, aw, oi/oy, ou/ow' },
+    ],
+    outcomes: [
+      'Read all major vowel teams accurately',
+      'Use igh, oi/oy, ou/ow correctly in spelling',
+      'Show fluency when reading paragraphs',
+      'Build vocabulary using unit patterns',
+    ],
+  },
+  {
+    id: 'u7', num: '07', tone: 'sage', icon: 'pencil-ruler',
+    title: 'Spelling Rules',
+    sessionRange: 'Sessions 58–69',
+    sessions: [
+      { range: 'Sessions 58–59', topic: 'Silent Letters — kn, wr, gn, mb' },
+      { range: 'Session 60',          topic: 'Soft vs Hard C' },
+      { range: 'Session 61',          topic: 'Soft vs Hard G' },
+      { range: 'Sessions 62–63', topic: 'Floss Rule — ff, ll, ss, zz' },
+      { range: 'Sessions 64–65', topic: 'Doubling Rule (e.g. running)' },
+      { range: 'Sessions 66–67', topic: 'Drop-E Rule (e.g. making)' },
+      { range: 'Sessions 68–69', topic: 'Y-to-I Rule (e.g. happier)' },
+    ],
+    outcomes: [
+      'Apply the doubling rule confidently',
+      'Apply the drop-e rule when adding suffixes',
+      'Distinguish soft and hard C & G sounds',
+      'Spell silent letter words correctly',
+      'Know and use more sight words',
+    ],
+  },
+  {
+    id: 'u8', num: '08', tone: 'clay', icon: 'book-open',
+    title: 'Fluency, Comprehension & Punctuation',
+    sessionRange: 'Sessions 70–80',
+    sessions: [
+      { range: 'Sessions 70–72', topic: 'Reading Decodable Books' },
+      { range: 'Sessions 73–76', topic: 'Reading Comprehension' },
+      { range: 'Session 77',          topic: 'Capital Letters, Full Stop & Question Mark' },
+      { range: 'Sessions 78–80', topic: 'Writing with Dictation' },
+    ],
+    outcomes: [
+      'Read a Level 1 book from start to finish',
+      'Understand and explain what they have read',
+      'Use full stops, capital letters, and question marks correctly',
+      'Explain word meanings using pictures and context clues',
+      'Write a sentence to dictation independently',
+    ],
+  },
+];
+
+const OUTCOMES = [
+  { icon: 'ear',            title: 'Strong phonological awareness', desc: 'Can hear and manipulate the sounds in spoken words — the bedrock of all literacy.' },
+  { icon: 'type',           title: 'All 26 letter sounds',          desc: 'Names, forms, and produces every letter sound with confidence.' },
+  { icon: 'book-open',      title: 'Reads Level 1 books',           desc: 'Reads a complete decodable book from cover to cover independently.' },
+  { icon: 'pencil',         title: 'Writes from dictation',          desc: 'Spells CVC words and writes full sentences without prompting.' },
+  { icon: 'layers',         title: '50+ CVC words',                  desc: 'Reads and spells 50+ consonant-vowel-consonant words with ease.' },
+  { icon: 'shield-check',   title: 'Applies spelling rules',         desc: 'Understands doubling, drop-e, and y-to-i rules when writing.' },
+  { icon: 'message-square', title: 'Reads with punctuation',         desc: 'Uses full stops, capitals, and question marks correctly in writing.' },
+  { icon: 'search',         title: 'Reads 50+ sight words',          desc: 'Recognises and reads 50+ sight words fluently.' },
+  { icon: 'heart',          title: 'Loves reading',                  desc: 'The shift from reluctant to enthusiastic — what every parent notices first.' },
+];
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                              */
+/* ------------------------------------------------------------------ */
+
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function icons() {
+  if (window.lucide) window.lucide.createIcons();
+}
+
+/* ------------------------------------------------------------------ */
+/* Nav                                                                  */
+/* ------------------------------------------------------------------ */
+
+function Nav() {
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(icons);
+
+  const links = [
+    { label: 'The Program', id: 'course' },
+    { label: 'Outcomes',    id: 'results' },
+  ];
+
+  const go = (id) => { setOpen(false); setTimeout(() => goTo(id), 10); };
+
+  return (
+    <header style={{
+      position: 'sticky', top: 0, zIndex: 30,
+      background: 'rgba(250,246,241,0.92)',
+      backdropFilter: 'blur(14px)',
+      WebkitBackdropFilter: 'blur(14px)',
+      borderBottom: '1px solid var(--border-subtle)',
+    }}>
+      <div className="ll-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
+        <button onClick={() => goTo('hero')} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}>
+          <img src="./project/assets/logo-full.svg" alt="Letter Land" style={{ height: 36 }} />
+        </button>
+
+        <nav className="ll-desktop-nav" style={{ alignItems: 'center', gap: 2 }}>
+          {links.map(function(l) {
+            return (
+              <button key={l.id} onClick={() => go(l.id)} className="ll-nav-link" style={{
+                fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15,
+                color: 'var(--text-body)', padding: '8px 16px', borderRadius: 'var(--radius-pill)',
+                border: 'none', background: 'transparent', cursor: 'pointer',
+                transition: 'color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out)',
+              }}>{l.label}</button>
+            );
+          })}
+          <div style={{ marginLeft: 8 }}>
+            <Button size="sm" onClick={() => go('contact')}>Get in touch</Button>
+          </div>
+        </nav>
+
+        <button className="ll-mobile-toggle" onClick={() => setOpen(!open)} aria-label="Menu" style={{
+          border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-strong)', padding: 8,
+        }}>
+          <i data-lucide={open ? 'x' : 'menu'} style={{ width: 26, height: 26 }}></i>
+        </button>
+      </div>
+
+      {open && (
+        <div className="ll-container" style={{
+          paddingTop: 12, paddingBottom: 20,
+          borderTop: '1px solid var(--border-subtle)',
+          display: 'flex', flexDirection: 'column', gap: 2,
+        }}>
+          {links.map(function(l) {
+            return (
+              <button key={l.id} onClick={() => go(l.id)} style={{
+                fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17,
+                color: 'var(--text-body)', padding: '12px 8px',
+                border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left',
+              }}>{l.label}</button>
+            );
+          })}
+          <div style={{ marginTop: 12 }}>
+            <Button fullWidth onClick={() => go('contact')}>Get in touch</Button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero                                                                 */
+/* ------------------------------------------------------------------ */
+
+function Hero() {
+  React.useEffect(icons);
+  return (
+    <section id="hero" style={{ paddingTop: 'var(--space-11)', paddingBottom: 'var(--space-10)' }}>
+      <div className="ll-container">
+        <div className="ll-hero-grid">
+          <div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
+              <Badge tone="clay" variant="solid">8 Units &middot; 90 Sessions</Badge>
+              <Badge tone="sage">Ages 4&ndash;6</Badge>
+            </div>
+            <h1 style={{ fontSize: 'clamp(2.2rem, 4.8vw, 3.6rem)', margin: '0 0 20px', lineHeight: 1.06, letterSpacing: '-0.02em' }}>
+              Helping little ones{' '}
+              <span style={{ color: 'var(--accent)' }}>fall in love</span>{' '}
+              with letters.
+            </h1>
+            <p style={{ fontSize: 'var(--text-md)', color: 'var(--text-muted)', maxWidth: '46ch', margin: '0 0 28px', lineHeight: 1.65 }}>
+              A comprehensive, structured phonics program &mdash; from listening for sounds all the way to reading Level 1 books independently. Joyful, research-backed, and designed for ages 4&ndash;6.
+            </p>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+              <Button size="lg" onClick={() => goTo('course')}
+                trailingIcon={<i data-lucide="arrow-right" style={{ width: 18, height: 18 }}></i>}>
+                Explore the program
+              </Button>
+              <Button size="lg" variant="secondary" onClick={() => goTo('results')}>
+                See outcomes
+              </Button>
+            </div>
+          </div>
+          <div className="ll-hero-img" style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{
+              background: 'var(--clay-100)',
+              borderRadius: 'var(--radius-2xl)',
+              padding: '40px 32px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '100%', maxWidth: 440,
+              boxShadow: 'var(--shadow-lg)',
+            }}>
+              <img src="./project/assets/illustration-tiles.svg" alt="Playful letter tiles" style={{ width: '100%', maxWidth: 320 }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Stats strip                                                          */
+/* ------------------------------------------------------------------ */
+
+function StatStrip() {
+  const stats = [
+    { value: '90',     label: 'Sessions' },
+    { value: '45 min', label: 'Per session' },
+    { value: '8',      label: 'Units' },
+    { value: '4–6', label: 'Age range' },
+  ];
+  return (
+    <div style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-card)' }}>
+      <div className="ll-container">
+        <div className="ll-stats-grid">
+          {stats.map(function(s) {
+            return (
+              <div key={s.label} className="ll-stat-item">
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: 'var(--text-strong)', lineHeight: 1.1 }}>{s.value}</span>
+                <span style={{ fontSize: 13, color: 'var(--text-subtle)', marginTop: 4, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{s.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Unit accordion card                                                  */
+/* ------------------------------------------------------------------ */
+
+function UnitCard({ unit, isOpen, onToggle }) {
+  React.useEffect(icons);
+  const clay = unit.tone === 'clay';
+  const bg = clay ? 'var(--clay-100)' : 'var(--sage-100)';
+  const fg = clay ? 'var(--clay-600)' : 'var(--sage-600)';
+  const border = isOpen ? (clay ? 'var(--clay-300)' : 'var(--sage-300)') : 'var(--border-subtle)';
+
+  return (
+    <div style={{ border: '1.5px solid ' + border, borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--surface-card)', transition: 'border-color var(--duration-normal) var(--ease-out)' }}>
+      <button className="ll-unit-header" onClick={onToggle} aria-expanded={isOpen}>
+        <span style={{ flex: 'none', width: 44, height: 44, borderRadius: 'var(--radius-md)', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <i data-lucide={unit.icon} style={{ width: 20, height: 20 }}></i>
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>
+            Unit {unit.num} &middot; {unit.sessionRange}
+          </span>
+          <h3 style={{ margin: '2px 0 0', fontSize: 'var(--text-md)', lineHeight: 1.3 }}>{unit.title}</h3>
+        </div>
+        <span style={{ flex: 'none', width: 32, height: 32, borderRadius: 'var(--radius-full)', background: isOpen ? bg : 'var(--surface-sunken)', color: isOpen ? fg : 'var(--text-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <i data-lucide={isOpen ? 'chevron-up' : 'chevron-down'} style={{ width: 16, height: 16 }}></i>
+        </span>
+      </button>
+
+      {isOpen && (
+        <div style={{ padding: '0 24px 24px', borderTop: '1px solid var(--border-subtle)' }}>
+          <div style={{ paddingTop: 18, marginBottom: 18 }}>
+            <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-subtle)' }}>Sessions</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {unit.sessions.map(function(s) {
+                return (
+                  <div key={s.range} style={{ display: 'flex', gap: 12, alignItems: 'baseline', fontSize: 14 }}>
+                    <span style={{ flex: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12.5, color: fg, minWidth: 110 }}>{s.range}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{s.topic}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ background: 'var(--success-soft)', borderRadius: 'var(--radius-md)', padding: '14px 16px' }}>
+            <p style={{ margin: '0 0 10px', fontSize: 12, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--success-text)' }}>After this unit, your child can:</p>
+            {unit.outcomes.map(function(o) {
+              return (
+                <div key={o} className="ll-outcome-item">
+                  <i data-lucide="check" style={{ width: 15, height: 15, color: 'var(--success)', marginTop: 1, flex: 'none' }}></i>
+                  <span style={{ color: 'var(--success-text)', fontWeight: 500 }}>{o}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Units() {
+  const [openId, setOpenId] = React.useState('u1');
+  const toggle = (id) => setOpenId(function(prev) { return prev === id ? null : id; });
+
+  return (
+    <section id="course" style={{ background: 'var(--surface-sunken)', paddingTop: 'var(--space-11)', paddingBottom: 'var(--space-11)' }}>
+      <div className="ll-container">
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-9)' }}>
+          <Badge tone="sage">The program</Badge>
+          <h2 style={{ marginTop: 14, marginBottom: 10, fontSize: 'clamp(1.75rem, 3.5vw, 2.25rem)' }}>
+            Eight units. A complete foundation in reading.
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-md)', margin: '0 auto', maxWidth: '52ch', lineHeight: 1.65 }}>
+            Each unit builds on the last &mdash; from hearing sounds to reading fluently, spelling confidently, and writing independently.
+          </p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 780, margin: '0 auto' }}>
+          {UNITS.map(function(unit) {
+            return (
+              <UnitCard
+                key={unit.id}
+                unit={unit}
+                isOpen={openId === unit.id}
+                onToggle={() => toggle(unit.id)}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Outcomes                                                             */
+/* ------------------------------------------------------------------ */
+
+function Results() {
+  React.useEffect(icons);
+  return (
+    <section id="results" style={{ paddingTop: 'var(--space-11)', paddingBottom: 'var(--space-11)' }}>
+      <div className="ll-container">
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-9)' }}>
+          <Badge tone="clay">Program outcomes</Badge>
+          <h2 style={{ marginTop: 14, marginBottom: 10, fontSize: 'clamp(1.75rem, 3.5vw, 2.25rem)' }}>
+            What your child will be able to do.
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-md)', margin: '0 auto', maxWidth: '52ch', lineHeight: 1.65 }}>
+            By the end of all 90 sessions, most children are reading Level 1 books &mdash; and asking for more.
+          </p>
+        </div>
+
+        <div className="ll-results-grid">
+          {OUTCOMES.map(function(o) {
+            return (
+              <div key={o.title} style={{ background: 'var(--surface-card)', border: '1.5px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '22px 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <span style={{ width: 42, height: 42, borderRadius: 'var(--radius-md)', background: 'var(--clay-100)', color: 'var(--clay-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i data-lucide={o.icon} style={{ width: 20, height: 20 }}></i>
+                </span>
+                <h3 style={{ margin: 0, fontSize: 'var(--text-md)' }}>{o.title}</h3>
+                <p style={{ margin: 0, fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.55 }}>{o.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ marginTop: 'var(--space-9)', background: 'var(--clay-100)', borderRadius: 'var(--radius-xl)', padding: 'clamp(28px, 5vw, 48px)', maxWidth: 700, marginLeft: 'auto', marginRight: 'auto' }}>
+          <span style={{ fontFamily: 'var(--font-accent)', fontSize: 26, color: 'var(--clay-500)', display: 'block', marginBottom: 16, textAlign: 'center' }}>
+            parent&rsquo;s favourite story
+          </span>
+          <p style={{ fontSize: 'var(--text-md)', color: 'var(--ink-800)', margin: '0 0 12px', lineHeight: 1.65 }}>
+            &ldquo;Arpita conducted a wonderful phonics session for my daughter, Idika, focused on helping kids understand when to use &lsquo;c&rsquo; and &lsquo;k.&rsquo; The class was engaging, interactive, and explained the concept in a very simple way that young children could easily grasp.
+          </p>
+          <p style={{ fontSize: 'var(--text-md)', color: 'var(--ink-800)', margin: '0 0 18px', lineHeight: 1.65 }}>
+            Idika absolutely loved the session and, more importantly, she genuinely learned a lot. Arpita made the learning process fun with activities and examples that kept the kids interested throughout. I would highly recommend Arpita&rsquo;s phonics workshop for children. It&rsquo;s a great way for kids to build strong reading and spelling foundations while actually enjoying the process of learning.&rdquo;
+          </p>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--clay-700)' }}>&mdash; Parent of Idika &middot; Phonics workshop attendee</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* How it works                                                         */
+/* ------------------------------------------------------------------ */
+
+function HowItWorks() {
+  React.useEffect(icons);
+  const features = [
+    {
+      icon: 'clipboard-check',
+      bg: 'var(--clay-100)',
+      border: 'var(--clay-200)',
+      fg: 'var(--clay-600)',
+      title: 'Frequent assessments to track real progress',
+      body: 'I assess your child regularly throughout the program &mdash; not just at the end &mdash; to make sure they have genuinely understood each unit before we move on. Every gap is caught early and addressed in the session, so no child gets left behind.',
+    },
+    {
+      icon: 'file-text',
+      bg: 'var(--sage-100)',
+      border: 'var(--sage-200)',
+      fg: 'var(--sage-600)',
+      title: 'Lots of worksheets to reinforce every concept',
+      body: 'Each unit comes with plenty of practice worksheets so children can revisit, repeat, and truly retain what they have learned. Repetition is how phonics sticks &mdash; and the worksheets make that process feel structured, not overwhelming.',
+    },
+  ];
+
+  return (
+    <section style={{ background: 'var(--surface-card)', paddingTop: 'var(--space-11)', paddingBottom: 'var(--space-11)' }}>
+      <div className="ll-container">
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-9)' }}>
+          <Badge tone="sage">How it works</Badge>
+          <h2 style={{ marginTop: 14, marginBottom: 10, fontSize: 'clamp(1.75rem, 3.5vw, 2.25rem)' }}>
+            Built to make learning stick.
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-md)', margin: '0 auto', maxWidth: '50ch', lineHeight: 1.65 }}>
+            Progress in phonics is not just about exposure &mdash; it is about understanding. Here is how the program ensures your child truly learns.
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, maxWidth: 900, margin: '0 auto' }}>
+          {features.map(function(f) {
+            return (
+              <div key={f.title} style={{ background: f.bg, border: '1.5px solid ' + f.border, borderRadius: 'var(--radius-xl)', padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <span style={{ width: 52, height: 52, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.6)', color: f.fg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i data-lucide={f.icon} style={{ width: 24, height: 24 }}></i>
+                </span>
+                <h3 style={{ margin: 0, fontSize: 'var(--text-lg)', lineHeight: 1.3 }}>{f.title}</h3>
+                <p style={{ margin: 0, fontSize: 'var(--text-base)', color: 'var(--text-muted)', lineHeight: 1.7 }}>{f.body}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Outro                                                                */
+/* ------------------------------------------------------------------ */
+
+function Outro() {
+  return (
+    <section id="contact" style={{ background: 'var(--ink-900)' }}>
+      <div className="ll-container" style={{ paddingTop: 'var(--space-12)', paddingBottom: 'var(--space-12)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <img src="./project/assets/logo-mark.svg" alt="" style={{ height: 48, marginBottom: 28, opacity: 0.85 }} />
+        <span style={{ fontFamily: 'var(--font-accent)', fontSize: 26, color: 'var(--clay-300)', display: 'block', marginBottom: 14 }}>
+          every child deserves this moment
+        </span>
+        <h2 style={{ color: 'var(--ink-50)', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 800, lineHeight: 1.1, maxWidth: '20ch', margin: '0 auto 20px', letterSpacing: '-0.02em' }}>
+          Making kids fall in love with letters.
+        </h2>
+        <p style={{ fontSize: 'var(--text-md)', color: 'var(--ink-300)', maxWidth: '52ch', lineHeight: 1.7, margin: '0 auto 40px' }}>
+          When a child realises they can read &mdash; really read &mdash; something changes. Their eyes light up. They feel capable, proud, and curious. That moment is what this program is for, and every one of the 90 sessions is designed to get them there.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <p style={{ margin: 0, fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-400)' }}>Get in touch</p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href="mailto:hello@arpitakarthik.in" style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'var(--ink-800)', border: '1px solid var(--ink-600)',
+              borderRadius: 'var(--radius-pill)', padding: '12px 22px',
+              color: 'var(--ink-50)', textDecoration: 'none',
+              fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15,
+              transition: 'background 120ms ease, border-color 120ms ease',
+            }}
+              onMouseEnter={function(e) { e.currentTarget.style.background = 'var(--ink-700)'; e.currentTarget.style.borderColor = 'var(--ink-400)'; }}
+              onMouseLeave={function(e) { e.currentTarget.style.background = 'var(--ink-800)'; e.currentTarget.style.borderColor = 'var(--ink-600)'; }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--clay-300)', flexShrink: 0 }}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              hello@arpitakarthik.in
+            </a>
+            <a href="tel:+12062948919" style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'var(--ink-800)', border: '1px solid var(--ink-600)',
+              borderRadius: 'var(--radius-pill)', padding: '12px 22px',
+              color: 'var(--ink-50)', textDecoration: 'none',
+              fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15,
+              transition: 'background 120ms ease, border-color 120ms ease',
+            }}
+              onMouseEnter={function(e) { e.currentTarget.style.background = 'var(--ink-700)'; e.currentTarget.style.borderColor = 'var(--ink-400)'; }}
+              onMouseLeave={function(e) { e.currentTarget.style.background = 'var(--ink-800)'; e.currentTarget.style.borderColor = 'var(--ink-600)'; }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--clay-300)', flexShrink: 0 }}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              +1 (206) 294-8919
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                               */
+/* ------------------------------------------------------------------ */
+
+function Footer() {
+  React.useEffect(icons);
+  return (
+    <footer style={{ borderTop: '1px solid var(--border-subtle)' }}>
+      <div className="ll-container" style={{ paddingTop: 'var(--space-6)', paddingBottom: 'var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <img src="./project/assets/logo-full.svg" alt="Letter Land" style={{ height: 32 }} />
+        <div style={{ display: 'flex', gap: 16 }}>
+          {[['instagram', '#'], ['youtube', '#'], ['mail', 'mailto:hello@arpitakarthik.in']].map(function(pair) {
+            var icon = pair[0]; var href = pair[1];
+            return (
+              <a key={icon} href={href} style={{ color: 'var(--text-subtle)', display: 'flex' }}
+                onMouseEnter={function(e) { e.currentTarget.style.color = 'var(--accent)'; }}
+                onMouseLeave={function(e) { e.currentTarget.style.color = 'var(--text-subtle)'; }}>
+                <i data-lucide={icon} style={{ width: 20, height: 20 }}></i>
+              </a>
+            );
+          })}
+        </div>
+        <span style={{ fontSize: 13, color: 'var(--text-subtle)' }}>&copy; 2026 Letter Land &middot; Arpita Bhattacharjee</span>
+      </div>
+    </footer>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* App                                                                  */
+/* ------------------------------------------------------------------ */
+
+function App() {
+  React.useEffect(icons);
+  return (
+    <React.Fragment>
+      <Nav />
+      <main>
+        <Hero />
+        <StatStrip />
+        <Units />
+        <Results />
+        <HowItWorks />
+        <Outro />
+      </main>
+      <Footer />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+</script>
+</body>
+</html>
